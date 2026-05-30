@@ -9,20 +9,11 @@ class MailingNoWaves extends Page
 {
     protected string $view = 'filament.pages.reports.mailing-no-waves';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return 'Relatorios';
-    }
+    protected static \UnitEnum|string|null $navigationGroup = 'Relatorios';
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Mailing Sem Vinculo';
-    }
+    protected static ?string $navigationLabel = 'Mailing Sem Vinculo';
 
-    public static function getNavigationSort(): ?int
-    {
-        return 33;
-    }
+    protected static ?int $navigationSort = 33;
 
     protected function getViewData(): array
     {

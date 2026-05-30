@@ -9,20 +9,11 @@ class ExpertsBothWaves extends Page
 {
     protected string $view = 'filament.pages.reports.experts-both-waves';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return 'Relatorios';
-    }
+    protected static \UnitEnum|string|null $navigationGroup = 'Relatorios';
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Especialistas Ambas Ondas';
-    }
+    protected static ?string $navigationLabel = 'Especialistas Ambas Ondas';
 
-    public static function getNavigationSort(): ?int
-    {
-        return 22;
-    }
+    protected static ?int $navigationSort = 22;
 
     protected function getViewData(): array
     {

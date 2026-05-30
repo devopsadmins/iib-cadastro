@@ -9,20 +9,11 @@ class ExpertsNoWaves extends Page
 {
     protected string $view = 'filament.pages.reports.experts-no-waves';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return 'Relatorios';
-    }
+    protected static \UnitEnum|string|null $navigationGroup = 'Relatorios';
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Especialistas Sem Vinculo';
-    }
+    protected static ?string $navigationLabel = 'Especialistas Sem Vinculo';
 
-    public static function getNavigationSort(): ?int
-    {
-        return 23;
-    }
+    protected static ?int $navigationSort = 23;
 
     protected function getViewData(): array
     {

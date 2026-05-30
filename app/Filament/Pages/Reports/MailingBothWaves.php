@@ -9,20 +9,11 @@ class MailingBothWaves extends Page
 {
     protected string $view = 'filament.pages.reports.mailing-both-waves';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return 'Relatorios';
-    }
+    protected static \UnitEnum|string|null $navigationGroup = 'Relatorios';
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Mailing Ambas Ondas';
-    }
+    protected static ?string $navigationLabel = 'Mailing Ambas Ondas';
 
-    public static function getNavigationSort(): ?int
-    {
-        return 32;
-    }
+    protected static ?int $navigationSort = 32;
 
     protected function getViewData(): array
     {

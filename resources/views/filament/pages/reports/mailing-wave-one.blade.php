@@ -1,27 +1,31 @@
-<x-filament-panels::page>
-    <h2 class="text-lg font-semibold mb-3">Mailing vinculado na Onda 1</h2>
-    <div class="rounded-lg border border-gray-200 bg-white p-4 overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b">
-                    <th class="py-2 text-left">Entrevistado</th>
-                    <th class="py-2 text-left">Empresa</th>
-                    <th class="py-2 text-left">Cargo</th>
-                    <th class="py-2 text-left">Cidade</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($rows as $row)
-                    <tr class="border-b">
-                        <td class="py-2">{{ $row->interviewee_name }}</td>
-                        <td class="py-2">{{ $row->company ?? '-' }}</td>
-                        <td class="py-2">{{ $row->occupation ?? '-' }}</td>
-                        <td class="py-2">{{ $row->city ?? '-' }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="4" class="py-3 text-gray-500">Sem dados.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</x-filament-panels::page>
+<x-report-page
+    title="Mailing por filtro de onda"
+    subtitle="Lista de contatos usados no recorte da primeira onda."
+    badge="Relatorios de mailing"
+    count-label="Contatos"
+    :count="$rows->count()"
+>
+    <x-slot:meta>
+        <span class="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-slate-200">Filtro: Onda 1</span>
+    </x-slot:meta>
+
+    <x-slot:thead>
+        <th class="px-5 py-4 text-left font-semibold">Entrevistado</th>
+        <th class="px-5 py-4 text-left font-semibold">Empresa</th>
+        <th class="px-5 py-4 text-left font-semibold">Cargo</th>
+        <th class="px-5 py-4 text-left font-semibold">Cidade</th>
+    </x-slot:thead>
+
+    @forelse($rows as $row)
+        <tr class="transition hover:bg-slate-50/80">
+            <td class="px-5 py-4 font-medium text-slate-900">{{ $row->interviewee_name }}</td>
+            <td class="px-5 py-4 text-slate-600">{{ $row->company ?? '-' }}</td>
+            <td class="px-5 py-4 text-slate-600">{{ $row->occupation ?? '-' }}</td>
+            <td class="px-5 py-4 text-slate-600">{{ $row->city ?? '-' }}</td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4" class="px-5 py-10 text-center text-slate-500">Sem dados.</td>
+        </tr>
+    @endforelse
+</x-report-page>
