@@ -1,0 +1,27 @@
+<x-filament-panels::page>
+    <h2 class="text-lg font-semibold mb-3">Mailing vinculado em ambas as ondas</h2>
+    <div class="rounded-lg border border-gray-200 bg-white p-4 overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b">
+                    <th class="py-2 text-left">Entrevistado</th>
+                    <th class="py-2 text-left">Empresa</th>
+                    <th class="py-2 text-left">Cargo</th>
+                    <th class="py-2 text-left">Cidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($rows as $row)
+                    <tr class="border-b">
+                        <td class="py-2">{{ $row->interviewee_name }}</td>
+                        <td class="py-2">{{ $row->company ?? '-' }}</td>
+                        <td class="py-2">{{ $row->occupation ?? '-' }}</td>
+                        <td class="py-2">{{ $row->city ?? '-' }}</td>
+                    </tr>
+                @empty
+                    <tr><td colspan="4" class="py-3 text-gray-500">Sem dados.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-filament-panels::page>
