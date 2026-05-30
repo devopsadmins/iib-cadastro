@@ -1,58 +1,195 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# IIB Cadastro
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicacao administrativa para cadastro e analise de especialistas e mailing, com relatorios por onda e importacao de dados legados.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.2+
+- Laravel 12.61
+- Filament 4 (painel admin em /admin)
+- MySQL (destino principal)
+- Tailwind CSS 4 + Vite
+- Sessao e cache com driver file
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Escopo funcional
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Autenticacao admin no Filament
+- Cadastro de tipos de especialistas
+- Cadastro de especialistas
+- Cadastro de mailing
+- Cadastro de ondas
+- Vinculos N:N
+  - especialistas x ondas
+  - mailing x ondas
+- Relatorios no painel
+  - Especialistas Onda 1
+  - Especialistas Onda 2
+  - Especialistas Ambas Ondas
+  - Especialistas Sem Vinculo
+  - Mailing Onda 1
+  - Mailing Onda 2
+  - Mailing Ambas Ondas
+  - Mailing Sem Vinculo
+- Resumo de importacao
+- Importacao de planilhas (XLSX)
+- Importacao de base legada Postgres -> MySQL
 
-## Learning Laravel
+## Requisitos locais
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.2 ou superior
+- Composer
+- Node.js + npm
+- MySQL
+- Docker (apenas para o comando de importacao Postgres)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Setup rapido
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+1. Instalar dependencias:
 
-## Agentic Development
+	composer install
+	npm install
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+2. Criar arquivo de ambiente e chave:
 
-```bash
-composer require laravel/boost --dev
+	cp .env.example .env
+	php artisan key:generate
 
-php artisan boost:install
-```
+3. Configurar MySQL no .env:
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+	DB_CONNECTION=mysql
+	DB_HOST=127.0.0.1
+	DB_PORT=3306
+	DB_DATABASE=iib_cadastro
+	DB_USERNAME=iib_user
+	DB_PASSWORD=change_me
 
-## Contributing
+4. Rodar migrations e seed:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+	php artisan migrate
+	php artisan db:seed
 
-## Code of Conduct
+5. Subir aplicacao:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+	php artisan serve
 
-## Security Vulnerabilities
+6. (Opcional) Frontend em desenvolvimento:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+	npm run dev
 
-## License
+## Credenciais de admin
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Definidas por variaveis no .env:
+
+- ADMIN_EMAIL
+- ADMIN_PASSWORD
+- ADMIN_NAME
+
+Valores padrao no .env.example:
+
+- ADMIN_EMAIL=admin@institutointeligencia.com.br
+- ADMIN_PASSWORD=changeme
+- ADMIN_NAME=Administrador IIB
+
+## URLs locais
+
+- App: http://127.0.0.1:8000
+- Admin: http://127.0.0.1:8000/admin
+
+## Comandos customizados
+
+### 1) Validacao de go-live
+
+Valida chave de app, conexao com banco, drivers de sessao/cache e usuario admin ativo.
+
+php artisan iib:go-live-check
+
+### 2) Bootstrap de producao
+
+Executa limpeza de caches, migrate, seed e recompilacao de caches.
+
+php artisan iib:bootstrap-prod
+
+### 3) Importacao Postgres -> MySQL
+
+Comando:
+
+php artisan iib:import-postgres --section=all --truncate
+
+Opcoes:
+
+- --section=all|core|registry|mailing|stats|users
+- --truncate (limpa tabelas de destino da secao selecionada antes de importar)
+
+Dependencias de secao:
+
+- core: expert_types, survey_waves
+- registry: registry_experts, registry_expert_waves
+- mailing: mailing_contacts, mailing_contact_waves
+- stats: import_runs, import_file_stats
+- users: users
+
+Observacao importante:
+
+- O importador consulta Postgres via cliente psql executado em container Docker (imagem postgres:16-alpine).
+- Isso evita dependencia de pdo_pgsql no PHP local.
+
+## Variaveis para origem Postgres
+
+Configurar no .env para usar importacao legada:
+
+- PGSRC_HOST
+- PGSRC_PORT (padrao 5432)
+- PGSRC_DATABASE
+- PGSRC_USERNAME
+- PGSRC_PASSWORD
+- PGSRC_SSLMODE (padrao prefer)
+
+## Deploy (Apache2)
+
+1. Apontar VirtualHost para a pasta public.
+2. Habilitar mod_rewrite.
+3. Garantir permissao de escrita em storage e bootstrap/cache.
+4. Executar:
+
+	php artisan iib:bootstrap-prod
+
+## Troubleshooting rapido
+
+### Erro no login: This password does not use the Bcrypt algorithm
+
+Causa comum: senha de usuario importada em hash legado nao compatavel.
+
+Estado atual do projeto:
+
+- O importador de usuarios normaliza senha para Bcrypt.
+- Se existir usuario antigo inconsistente, regrave senha com Hash::make.
+
+### Erro de importacao: There is no active transaction
+
+Causa historica: uso de TRUNCATE em transacao longa no MySQL.
+
+Estado atual do projeto:
+
+- Importador nao depende de transacao global.
+- Limpeza usa DELETE (com reset de AUTO_INCREMENT quando aplicavel).
+
+### Falha de conexao MySQL em hospedagem
+
+Se o banco so estiver acessivel por tunel SSH:
+
+- Ajuste DB_HOST e DB_PORT para o endpoint local do tunel (exemplo: 127.0.0.1:3308).
+
+## Qualidade e verificacao
+
+Comandos uteis:
+
+- php artisan test
+- php artisan optimize:clear
+- php artisan view:cache
+
+## Arquivos de referencia
+
+- Comandos artisan customizados: routes/console.php
+- Resumo de importacao: app/Filament/Pages/ImportSummary.php
+- Views de relatorio: resources/views/filament/pages/reports/
+- Base de conhecimento da sessao: CONHECIMENTO-SESSAO-2026-05-30.md
